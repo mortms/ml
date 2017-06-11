@@ -16,7 +16,8 @@ p = zeros(m, 1);
 %
 
 
-
+h = sigmoid(X * theta);
+p = floor(2 * h);
 
 
 
