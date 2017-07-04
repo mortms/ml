@@ -21,12 +21,25 @@ p = zeros(size(X, 1), 1);
 %       can use max(A, [], 2) to obtain the max for each row.
 %
 
+% We'll keep examples in rows, inputs in columns
 
+% Calculate hidden layer a2
+% Add bias input
+X = [ones(m, 1) X];
+z2 = X * Theta1';
+a2 = sigmoid(z2);
+printf("Size of a2 is %d, %d\n", size(a2));
 
+% Calculate output layer 3
+% Add bias input
+a2 = [ones(size(a2, 1), 1) a2];
+z3 = a2 * Theta2';
+a3 = sigmoid(z3);
+printf("Size of a3 is %d, %d\n", size(a3));
 
-
-
-
+% Find the highest probability for each example
+[probabilities, indices] = max(a3, [], 2);
+p = indices;
 
 
 % =========================================================================
