@@ -30,7 +30,10 @@ X = [ones(m, 1) X];
 %       for each row.
 %       
 
-
+% Calculate per-class probabilities for each example in X
+probabilities = all_theta * X';
+[maxes, indices] = max(probabilities);
+p = indices';
 
 
 

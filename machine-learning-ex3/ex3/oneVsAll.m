@@ -62,7 +62,6 @@ for i = 1:num_labels
   all_theta(i,:) = class_theta';
 endfor
 
-all_theta
 
 
 
