@@ -50,8 +50,19 @@ X = [ones(m, 1) X];
 %
 
 
+for i = 1:num_labels
+  % NB: Assumes label values are 1:num_labels (though does not have to 
+  % be in order)
+  class_labels = (y == i);
+  printf("Training label %d - %d examples\n", i, sum(class_labels));
+  initial_theta = zeros(n + 1, 1);
+  options = optimset('GradObj', 'on', 'MaxIter', 50);
+  class_theta = fmincg(@(t)(lrCostFunction(t, X, class_labels, lambda)), initial_theta, options);
+  printf("Params for label %d: %.4f, %.4f, %.4f...\n", i, class_theta(1), class_theta(2), class_theta(3));
+  all_theta(i,:) = class_theta';
+endfor
 
-
+all_theta
 
 
 
