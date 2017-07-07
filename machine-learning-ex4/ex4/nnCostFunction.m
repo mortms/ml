@@ -51,14 +51,15 @@ Theta2_grad = zeros(size(Theta2));
 % We're going to forward-propagate all examples at once.
 % Input X comes with examples in each row, but that confilcts with 
 % normal representation of activation layers, so switch to columns
-printf("Dimensions of X: %d x %d\n", size(X));
 a1 = X';
 
 % Add bias inputs in as we multiply
-z2 = Theta1 * [ones(1, size(a1, 2)); a1];
+a1 = [ones(1, size(a1, 2)); a1];
+z2 = Theta1 * a1;
 a2 = sigmoid(z2);
 
-z3 = Theta2 * [ones(1, size(a2, 2)); a2];
+a2 = [ones(1, size(a2, 2)); a2];
+z3 = Theta2 * a2;
 a3 = sigmoid(z3);
 
 % Sum up cost across each output label
@@ -93,6 +94,27 @@ J = J + reg;
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the 
 %               first time.
+% Recall that a2 and a3 have activations for each sample (by column)
+for i = 1:m
+  a3_i = a3(:,i);
+  a2_i = a2(:,i);
+  a1_i = a1(:,i);
+  
+%  printf("a3 dims = %dx%d; training_labels dims = %dx%d\n", size(a3), size(training_labels));
+  d3 = a3_i - training_labels(:,i);
+%  printf("d3 dims = %dx%d; Theta2 dims = %dx%d; z2 dims = %dx%d\n", size(d3), size(Theta2), size(z2));
+%  d2 = (Theta2' * d3) .* sigmoidGradient(z2(:,i));
+%  printf("tmp %dx%d; a2 %dx%d\n", size(tmp), size(a2));
+  d2 = (Theta2' * d3) .* (a2_i .* (1 - a2_i));
+  
+%  printf("T2_grad = %dx%d, d3 = %dx%d, a2 = %dx%d\n", size(Theta2_grad), size(d3), size(a2));
+  Theta2_grad = Theta2_grad + d3 * a2_i';
+%  printf("T1_grad = %dx%d, d2 = %dx%d, a1 = %dx%d\n", size(Theta1_grad), size(d2), size(a1));
+  Theta1_grad = Theta1_grad + d2(2:end) * a1_i';
+endfor
+Theta2_grad = Theta2_grad / m;
+Theta1_grad = Theta1_grad / m;
+
 %
 % Part 3: Implement regularization with the cost function and gradients.
 %
@@ -102,6 +124,7 @@ J = J + reg;
 %               and Theta2_grad from Part 2.
 %
 
+% Unroll gradient matrices to return
 grad = [Theta1_grad(:); Theta2_grad(:)];
 
 
