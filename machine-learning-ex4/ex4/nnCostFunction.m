@@ -16,6 +16,8 @@ function [J grad] = nnCostFunction(nn_params, ...
 
 % Reshape nn_params back into the parameters Theta1 and Theta2, the weight matrices
 % for our 2 layer neural network
+% Theta1 dimensions should be hidden_layer_size x (input_layer_size + 1)
+% Theta2 dimensinos should be num_labels x (hidden_layer_size + 1)
 Theta1 = reshape(nn_params(1:hidden_layer_size * (input_layer_size + 1)), ...
                  hidden_layer_size, (input_layer_size + 1));
 
@@ -24,6 +26,13 @@ Theta2 = reshape(nn_params((1 + (hidden_layer_size * (input_layer_size + 1))):en
 
 % Setup some useful variables
 m = size(X, 1);
+
+% y as passed is single-value per sample.  Convert to class labels
+% with each sample in a column
+training_labels = zeros(num_labels, m);
+for i = 1:m
+  training_labels(y(i), i) = 1;
+endfor
          
 % You need to return the following variables correctly 
 J = 0;
@@ -34,10 +43,38 @@ Theta2_grad = zeros(size(Theta2));
 % Instructions: You should complete the code by working through the
 %               following parts.
 %
-% Part 1: Feedforward the neural network and return the cost in the
+% Part 1: Feedforward the neural network   and return the cost in the
 %         variable J. After implementing Part 1, you can verify that your
 %         cost function computation is correct by verifying the cost
 %         computed in ex4.m
+
+% We're going to forward-propagate all examples at once.
+% Input X comes with examples in each row, but that confilcts with 
+% normal representation of activation layers, so switch to columns
+printf("Dimensions of X: %d x %d\n", size(X));
+a1 = X';
+
+% Add bias inputs in as we multiply
+z2 = Theta1 * [ones(1, size(a1, 2)); a1];
+a2 = sigmoid(z2);
+
+z3 = Theta2 * [ones(1, size(a2, 2)); a2];
+a3 = sigmoid(z3);
+
+% TODO: vectorize across output classes?
+printf("Dimensions of training_labels: %d x %d\n", size(training_labels));
+for k = 1:num_labels
+  % Grab k-th row of output and labels - both row vectors 
+  h_k = a3(k,:);
+  y_k = training_labels(k,:);
+  
+  % Basic cost function
+  part1 = -y_k * log(h_k)';
+  part2 = (1 .- y_k) * log(1 .- h_k)';
+  J = J + (part1 - part2) / m;
+  
+  % TODO: Add regularization
+endfor
 %
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
@@ -62,7 +99,7 @@ Theta2_grad = zeros(size(Theta2));
 %               and Theta2_grad from Part 2.
 %
 
-
+grad = [Theta1_grad(:); Theta2_grad(:)];
 
 
 
