@@ -94,24 +94,26 @@ J = J + reg;
 %         Hint: We recommend implementing backpropagation using a for-loop
 %               over the training examples if you are implementing it for the 
 %               first time.
+% Per-example calculation:
 % Recall that a2 and a3 have activations for each sample (by column)
-for i = 1:m
-  a3_i = a3(:,i);
-  a2_i = a2(:,i);
-  a1_i = a1(:,i);
-  
-%  printf("a3 dims = %dx%d; training_labels dims = %dx%d\n", size(a3), size(training_labels));
-  d3 = a3_i - training_labels(:,i);
-%  printf("d3 dims = %dx%d; Theta2 dims = %dx%d; z2 dims = %dx%d\n", size(d3), size(Theta2), size(z2));
-%  d2 = (Theta2' * d3) .* sigmoidGradient(z2(:,i));
-%  printf("tmp %dx%d; a2 %dx%d\n", size(tmp), size(a2));
-  d2 = (Theta2' * d3) .* (a2_i .* (1 - a2_i));
-  
-%  printf("T2_grad = %dx%d, d3 = %dx%d, a2 = %dx%d\n", size(Theta2_grad), size(d3), size(a2));
-  Theta2_grad = Theta2_grad + d3 * a2_i';
-%  printf("T1_grad = %dx%d, d2 = %dx%d, a1 = %dx%d\n", size(Theta1_grad), size(d2), size(a1));
-  Theta1_grad = Theta1_grad + d2(2:end) * a1_i';
-endfor
+% for i = 1:m
+%   a3_i = a3(:,i);
+%   a2_i = a2(:,i);
+%   a1_i = a1(:,i);
+%   
+%   d3 = a3_i - training_labels(:,i);
+% %  d2 = (Theta2' * d3) .* sigmoidGradient(z2(:,i));
+%   d2 = (Theta2' * d3) .* (a2_i .* (1 - a2_i));
+%   
+%   Theta2_grad = Theta2_grad + d3 * a2_i';
+%   Theta1_grad = Theta1_grad + d2(2:end) * a1_i';
+% endfor
+% Vectorized across all training samples:
+d3 = a3 - training_labels;
+d2 = (Theta2' * d3) .* (a2 .* (1 - a2));
+Theta2_grad = d3 * a2';
+Theta1_grad = d2(2:end,:) * a1';
+
 Theta2_grad = Theta2_grad / m;
 Theta1_grad = Theta1_grad / m;
 
