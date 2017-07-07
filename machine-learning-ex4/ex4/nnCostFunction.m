@@ -61,8 +61,7 @@ a2 = sigmoid(z2);
 z3 = Theta2 * [ones(1, size(a2, 2)); a2];
 a3 = sigmoid(z3);
 
-% TODO: vectorize across output classes?
-printf("Dimensions of training_labels: %d x %d\n", size(training_labels));
+% Sum up cost across each output label
 for k = 1:num_labels
   % Grab k-th row of output and labels - both row vectors 
   h_k = a3(k,:);
@@ -72,9 +71,13 @@ for k = 1:num_labels
   part1 = -y_k * log(h_k)';
   part2 = (1 .- y_k) * log(1 .- h_k)';
   J = J + (part1 - part2) / m;
-  
-  % TODO: Add regularization
 endfor
+  
+% Add regularization.  Note that we extract the first column of each
+% theta to remove params applied to bias
+reg = lambda / (2 * m) * (sumsq(Theta1(:, 2:end)(:)) + sumsq(Theta2(:, 2:end)(:)));
+J = J + reg;
+
 %
 % Part 2: Implement the backpropagation algorithm to compute the gradients
 %         Theta1_grad and Theta2_grad. You should return the partial derivatives of
