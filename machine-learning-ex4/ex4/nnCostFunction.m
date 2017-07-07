@@ -123,6 +123,13 @@ Theta1_grad = Theta1_grad / m;
 %               the regularization separately and then add them to Theta1_grad
 %               and Theta2_grad from Part 2.
 %
+reg1 = lambda / m * Theta1;
+reg1(:,1) = zeros(size(reg1, 1), 1);
+Theta1_grad = Theta1_grad + reg1;
+
+reg2 = lambda / m * Theta2;
+reg2(:,1) = zeros(size(reg2, 1), 1);
+Theta2_grad = Theta2_grad + reg2;
 
 % Unroll gradient matrices to return
 grad = [Theta1_grad(:); Theta2_grad(:)];
