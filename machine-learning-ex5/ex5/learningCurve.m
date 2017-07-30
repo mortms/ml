@@ -51,6 +51,16 @@ error_val   = zeros(m, 1);
 %       end
 %
 
+for i = 1:m
+  Xtrain = X(1:i,:);
+  ytrain = y(1:i);
+  
+  theta = trainLinearReg(Xtrain, ytrain, lambda);
+  # Just interested in cost here, not gradient.  No reg, so lambda = 0
+  error_train(i) = linearRegCostFunction(Xtrain, ytrain, theta, 0)(1);
+  error_val(i) = linearRegCostFunction(Xval, yval, theta, 0)(1);
+endfor
+
 % ---------------------- Sample Solution ----------------------
 
 
