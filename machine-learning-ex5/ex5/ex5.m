@@ -218,3 +218,8 @@ end
 
 fprintf('Program paused. Press enter to continue.\n');
 pause;
+
+# Calculate cost against test set w/ best lambda
+theta = trainLinearReg(X_poly, y, 3.0);
+test_cost = linearRegCostFunction(X_poly_test, ytest, theta, 0);
+fprintf('Test error @ lambda = 3: %f\n', test_cost);
