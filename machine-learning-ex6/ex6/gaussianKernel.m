@@ -16,7 +16,9 @@ sim = 0;
 %
 %
 
-
+delta = x1 - x2;
+mag = delta' * delta;
+sim = exp(-mag / (2 * sigma ^ 2));
 
 
 
