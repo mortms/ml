@@ -9,6 +9,12 @@ function word_indices = processEmail(email_contents)
 % Load Vocabulary
 vocabList = getVocabList();
 
+# Build a hash map of words -> indices
+vocabHash = struct();
+for i = 1:length(vocabList)
+  vocabHash.(vocabList{i}) = i;
+endfor
+
 % Init return value
 word_indices = [];
 
@@ -97,11 +103,9 @@ while ~isempty(email_contents)
     %       str2). It will return 1 only if the two strings are equivalent.
     %
 
-
-
-
-
-
+    if (isfield(vocabHash, str))
+      word_indices = [word_indices; vocabHash.(str)];
+    endif
 
 
 
