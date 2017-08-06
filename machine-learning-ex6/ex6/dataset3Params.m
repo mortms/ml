@@ -54,7 +54,7 @@ endfor
 
 C = C_vals(best_C_index);
 sigma = sigma_vals(best_sigma_index);
-
+fprintf("Best values are C = %f, sigma = %f\n", C, sigma);
 
 % =========================================================================
 
