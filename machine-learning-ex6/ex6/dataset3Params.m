@@ -23,10 +23,37 @@ sigma = 0.3;
 %        mean(double(predictions ~= yval))
 %
 
+C_vals = [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30];
+sigma_vals = [0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30];
+
+best_C_index = 1;
+best_sigma_index = 1;
+best_error = Inf;
 
 
+# Try out combinations of C and sigma to see what performs best on the
+# cross-validation data set.
+for i = 1:length(C_vals)
+  for j = 1:length(sigma_vals)
+    # Train model w/ choice of C and sigma
+    C = C_vals(i);
+    sigma = sigma_vals(j);
+    model = svmTrain(X, y, C, @(x1, x2) gaussianKernel(x1, x2, sigma));
+    
+    # See how we do
+    predictions = svmPredict(model, Xval);
+    error = mean(double(predictions ~= yval));
+    if error < best_error
+      best_C_index = i;
+      best_sigma_index = j;
+      best_error = error;
+    endif
+    
+  endfor
+endfor
 
-
+C = C_vals(best_C_index);
+sigma = sigma_vals(best_sigma_index);
 
 
 % =========================================================================
