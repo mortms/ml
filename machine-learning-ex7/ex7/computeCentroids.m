@@ -26,7 +26,14 @@ centroids = zeros(K, n);
 % Note: You can use a for-loop over the centroids to compute this.
 %
 
-
+for k = 1:K
+  # Build binary vector of matched samples
+  indices = idx == k;
+  contrib = indices .* X;
+  s = sum(contrib);
+  n = sum(indices);
+  centroids(k, :) = s ./ n;
+endfor
 
 
 
