@@ -27,12 +27,10 @@ centroids = zeros(K, n);
 %
 
 for k = 1:K
-  # Build binary vector of matched samples
-  indices = idx == k;
+  # Build binary vector of matched samples - 1 in each column for each matched row
+  indices = bsxfun(@times, (idx == k), ones(m, n));
   contrib = indices .* X;
-  s = sum(contrib);
-  n = sum(indices);
-  centroids(k, :) = s ./ n;
+  centroids(k, :) = sum(contrib) ./ sum(indices(:,1));
 endfor
 
 
